@@ -36,11 +36,25 @@ def generate_ai_analysis(indices, sr, er, em):
     ai_text = None
     if OPENAI_KEY:
         try:
-            import openai
-            openai.api_key = OPENAI_KEY
+            # 1. Import class OpenAI
+            from openai import OpenAI
+            
+            # 2. Khởi tạo Client với API key
+            client = OpenAI(api_key=OPENAI_KEY)
+            
             prompt = f"Dựa vào các chỉ số: {indices} và kết quả SR:{sr}, ER:{er}, EM:{em}, viết phân tích ngắn bằng tiếng Việt."
-            resp = openai.ChatCompletion.create(model='gpt-4o-mini', messages=[{'role':'user','content':prompt}], max_tokens=300)
-            ai_text = resp['choices'][0]['message']['content']
+            
+            # 3. Sử dụng cú pháp V1 mới (client.chat.completions.create)
+            resp = client.chat.completions.create(
+                model='gpt-4o-mini', 
+                messages=[{'role':'user','content':prompt}], 
+                max_tokens=300
+            )
+            
+            # 4. Truy cập kết quả theo kiểu đối tượng (object)
+            ai_text = resp.choices[0].message.content
+            
         except Exception as e:
             ai_text = f'OpenAI error: {e}'
+            
     return {'summary': summary, 'ai_analysis': ai_text}
