@@ -12,7 +12,6 @@ app.secret_key = SECRET_KEY
 # initialize firebase admin (if service account present)
 try:
     init_firebase(FIREBASE_CREDENTIALS)
-    init_firebase_admin()
 except Exception as e:
     print('Firebase init warning:', e)
 
