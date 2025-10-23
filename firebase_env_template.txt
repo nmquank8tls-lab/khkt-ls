@@ -1,0 +1,23 @@
+RENDER ENVIRONMENT VARIABLES - TEMPLATE
+
+Set the following environment variables in the Render Dashboard for your service:
+
+1) FIREBASE_CREDENTIALS_JSON
+   - Paste the full JSON contents of your Firebase service account file here (string). Render will store securely as an env var.
+   - Alternatively, upload the serviceAccountKey.json to the project and set FIREBASE_CREDENTIALS to './serviceAccountKey.json'
+
+2) FIREBASE_API_KEY
+   - From Firebase project settings -> Web API Key
+
+3) OPENAI_API_KEY
+   - Your OpenAI secret key (starts with sk-...). Required for AI-2 features.
+
+4) SECRET_KEY
+   - A random secret string for Flask session security (e.g., generate with os.urandom)
+
+5) DEFAULT_AI_LANG
+   - 'vi' for Tiếng Việt or 'en' for English. (We will set 'vi' as you requested)
+
+Notes:
+- Do NOT commit serviceAccountKey.json or API keys to GitHub.
+- If you set FIREBASE_CREDENTIALS_JSON, the app will write it to ./serviceAccountKey.json at startup (handled by the deploy script).
