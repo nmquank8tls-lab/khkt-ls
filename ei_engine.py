@@ -36,22 +36,34 @@ def generate_ai_analysis(indices, sr, er, em):
     ai_text = None
     if OPENAI_KEY:
         try:
-            # 1. Import class OpenAI
+            # 1. Import OpenAI và httpx
             from openai import OpenAI
+            import httpx
+
+            # 2. (TÙY CHỌN) Định nghĩa proxies
+            # Nếu bạn CÓ DÙNG proxy, hãy giữ 2 dòng này.
+            # (Bạn cần đặt biến môi trường PROXY_URL trên Render)
+            my_proxies = {"http://": os.getenv('PROXY_URL'), "https://": os.getenv('PROXY_URL')}
+            http_client = httpx.Client(proxies=my_proxies)
+
+            # 3. Khởi tạo Client
+            # Nếu bạn CÓ dùng proxy, dùng dòng này:
+            client = OpenAI(api_key=OPENAI_KEY, http_client=http_client)
             
-            # 2. Khởi tạo Client với API key
-            client = OpenAI(api_key=OPENAI_KEY)
-            
+            # ---
+            # NẾU BẠN KHÔNG DÙNG PROXY NỮA:
+            # Xóa 2 dòng ở mục (2) và thay bằng dòng này:
+            # client = OpenAI(api_key=OPENAI_KEY)
+            # ---
+
             prompt = f"Dựa vào các chỉ số: {indices} và kết quả SR:{sr}, ER:{er}, EM:{em}, viết phân tích ngắn bằng tiếng Việt."
             
-            # 3. Sử dụng cú pháp V1 mới (client.chat.completions.create)
             resp = client.chat.completions.create(
                 model='gpt-4o-mini', 
                 messages=[{'role':'user','content':prompt}], 
                 max_tokens=300
             )
             
-            # 4. Truy cập kết quả theo kiểu đối tượng (object)
             ai_text = resp.choices[0].message.content
             
         except Exception as e:
